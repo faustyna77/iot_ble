@@ -35,11 +35,15 @@
     const bleStateContainer = document.getElementById('bleState');
     const timestampContainer = document.getElementById('timestamp');
     // Write to the ESP32 LED Characteristic
-document.getElementById('moveServoButton').addEventListener('click', () => writeOnCharacteristic(1));
-document.getElementById('stopServoButton').addEventListener('click', () => writeOnCharacteristic(0));
 
-document.getElementById('ledButton').addEventListener('click', () => toggleLed());
 
+document.getElementById('led1Button').addEventListener('click', () => toggleLed(1));
+document.getElementById('led2Button').addEventListener('click', () => toggleLed(2));
+document.getElementById('led3Button').addEventListener('click', () => toggleLed(3));
+
+// Obsługa przycisków serwomechanizmu
+document.getElementById('moveServoButton').addEventListener('click', () => moveServo());
+document.getElementById('stopServoButton').addEventListener('click', () => stopServo());
 
     //Define BLE Device Specs
     var deviceName ='ESP32';
@@ -63,8 +67,8 @@ document.getElementById('ledButton').addEventListener('click', () => toggleLed()
     disconnectButton.addEventListener('click', disconnectDevice);
 
     // Write to the ESP32 LED Characteristic
-    onButton.addEventListener('click', () => writeOnCharacteristic(1));
-    offButton.addEventListener('click', () => writeOnCharacteristic(0));
+   // onButton.addEventListener('click', () => writeOnCharacteristic(1));
+   // offButton.addEventListener('click', () => writeOnCharacteristic(0));
 
     // Check if BLE is available in your Browser
     function isWebBluetoothEnabled() {
@@ -155,6 +159,49 @@ document.getElementById('ledButton').addEventListener('click', () => toggleLed()
             window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!")
         }
     }
+
+    function toggleLed(ledNumber){
+    if (bleServer && bleServer.connected) {
+        bleServiceFound.getCharacteristic(ledCharacteristic)
+        .then(characteristic => {
+            console.log("Found the LED characteristic: ", characteristic.uuid);
+            const data = new Uint8Array([ledNumber]);
+            return characteristic.writeValue(data);
+        })
+        .then(() => {
+            latestValueSent.innerHTML = "LED " + ledNumber + " toggled";
+            console.log("Value written to LED characteristic:", ledNumber);
+        })
+        .catch(error => {
+            console.error("Error writing to the LED characteristic: ", error);
+        });
+    } else {
+        console.error ("Bluetooth is not connected. Cannot write to characteristic.")
+        window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!")
+    }
+}
+
+
+function moveServo(){
+    if (bleServer && bleServer.connected) {
+        bleServiceFound.getCharacteristic(ledCharacteristic)
+        .then(characteristic => {
+            console.log("Found the LED characteristic: ", characteristic.uuid);
+            const data = new Uint8Array([4]); // Wartość 4 dla serwomechanizmu
+            return characteristic.writeValue(data);
+        })
+        .then(() => {
+            latestValueSent.innerHTML = "Servo moved";
+            console.log("Value written to LED characteristic for servo.");
+        })
+        .catch(error => {
+            console.error("Error writing to the LED characteristic for servo: ", error);
+        });
+    } else {
+        console.error ("Bluetooth is not connected. Cannot write to characteristic for servo.")
+        window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!")
+    }
+}
     function toggleLed(){
     writeOnCharacteristic(1); // Turn on LED
 }
