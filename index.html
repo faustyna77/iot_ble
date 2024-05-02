@@ -22,7 +22,8 @@
   <button id="onButton">ON</button>
   <button id="offButton">OFF</button>
   <p>Last value sent: <span id="valueSent"></span></p>
-  
+  <p><a href="https://randomnerdtutorials.com/">Created by RandomNerdTutorials.com</a></p>
+  <p><a href="https://RandomNerdTutorials.com/esp32-web-bluetooth/">Read the full project here.</a></p>
 </body>
 <script>
     // DOM Elements
@@ -34,12 +35,6 @@
     const latestValueSent = document.getElementById('valueSent');
     const bleStateContainer = document.getElementById('bleState');
     const timestampContainer = document.getElementById('timestamp');
-    // Write to the ESP32 LED Characteristic
-document.getElementById('moveServoButton').addEventListener('click', () => writeOnCharacteristic(1));
-document.getElementById('stopServoButton').addEventListener('click', () => writeOnCharacteristic(0));
-
-document.getElementById('ledButton').addEventListener('click', () => toggleLed());
-
 
     //Define BLE Device Specs
     var deviceName ='ESP32';
@@ -155,9 +150,6 @@ document.getElementById('ledButton').addEventListener('click', () => toggleLed()
             window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!")
         }
     }
-    function toggleLed(){
-    writeOnCharacteristic(1); // Turn on LED
-}
 
     function disconnectDevice() {
         console.log("Disconnect Device.");
