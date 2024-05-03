@@ -23,6 +23,7 @@
   <h2>Control Servo Motor</h2>
   <button id="moveServoButton">Move Servo</button>
   <button id="stopServoButton">Stop Servo</button>
+  <button id="servoBtn1">Servo button</button>
   <p>Last value sent: <span id="valueSent"></span></p>
   
 </body>
@@ -37,6 +38,7 @@ const led2ButtonOn = document.getElementById('led2ButtonOn');
 const led2ButtonOff = document.getElementById('led2ButtonOff');
 const led3ButtonOn = document.getElementById('led3ButtonOn');
 const led3ButtonOff = document.getElementById('led3ButtonOff');
+const servoBtn1=document.getElementById('servoBtn1');
 
 const moveServoButton = document.getElementById('moveServoButton');
 const stopServoButton = document.getElementById('stopServoButton');
@@ -76,6 +78,7 @@ const valueSentContainer = document.getElementById('valueSent');
     led3ButtonOff.addEventListener('click', () => writeOnCharacteristic(5));
     moveServoButton.addEventListener('click',()=>writeOnCharacteristic(6));
     stopServoButton.addEventListener('click',()=>writeOnCharacteristic(12));
+    servoBtn1.addEventListener('click',()=>writeOnCharacteristic(11));
 
 
     function isWebBluetoothEnabled() {
