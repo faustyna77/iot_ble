@@ -8,6 +8,7 @@
 BLEServer* pServer = NULL;
 BLECharacteristic* pSensorCharacteristic = NULL;
 BLECharacteristic* pLedCharacteristic = NULL;
+BLECharacteristic* pservoCharacteristic=NULL;
 bool deviceConnected = false;
 bool oldDeviceConnected = false;
 uint32_t value = 0;
@@ -15,16 +16,18 @@ uint32_t value = 0;
 const int ledPin2 = 2;
 const int ledPin4 = 4;
 const int ledPin5 = 5;
-const int servoPin = 15;
+const int ledPin6=19;
+const int servoPin = 21;
 
 Servo servo;
 
 #define SERVICE_UUID "19b10000-e8f2-537e-4f6c-d104768a1214"
 #define SENSOR_CHARACTERISTIC_UUID "19b10001-e8f2-537e-4f6c-d104768a1214"
 #define LED_CHARACTERISTIC_UUID "19b10002-e8f2-537e-4f6c-d104768a1214"
+#define SERVO_CHARACTERISTIC_UUID "e42dc8ca-8171-4775-98f6-7fdaa333044b"
 
-void moveServo(int);
-void stopServo();
+//void servoPos();
+//void servoStop();
 
 class MyServerCallbacks : public BLEServerCallbacks {
   void onConnect(BLEServer* pServer) {
@@ -36,7 +39,7 @@ class MyServerCallbacks : public BLEServerCallbacks {
   }
 };
 
-class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
+class MyCharacteristicCallbacksLed : public BLECharacteristicCallbacks {
   void onWrite(BLECharacteristic* pLedCharacteristic) {
     std::string value = pLedCharacteristic->getValue();
     if (value.length() > 0) {
@@ -62,24 +65,59 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
       }else if(receivedValue==5)
       {
         digitalWrite(ledPin5, LOW);
+      }else if(receivedValue==6)
+      {
+
+        
+    digitalWrite(ledPin6,HIGH);
+       
+
+      }else if(receivedValue==11)
+      {
+        digitalWrite(ledPin6,LOW);
+      }else  if (receivedValue ==12) {
+          servo.write(180);
+    delay(200);
+    servo.write(0);
+    //delay(25);
+        
       }
 
-     // for(int k=6;k<9;k++)
-//{
-
-     // }
+      
     }
   }
 };
 
 
 
+class MyCharacteristicCallbacksServo : public BLECharacteristicCallbacks {
+  void onWriteServo(BLECharacteristic* pservoCharacteristic) {
+    std::string value = pservoCharacteristic->getValue();
+    if (value.length() > 0) {
+      Serial.print("Characteristic event, written: ");
+      Serial.println(static_cast<int>(value[0]));
+
+      int receivedValue = static_cast<int>(value[0]);
+      if (receivedValue ==12) {
+          servo.write(180);
+    delay(200);
+    servo.write(0);
+    //delay(25);
+        
+      }
+
+      
+    }
+  }
+};
 
 void setup() {
   Serial.begin(9600);
   pinMode(ledPin2, OUTPUT);
   pinMode(ledPin4, OUTPUT);
   pinMode(ledPin5, OUTPUT);
+  pinMode(ledPin6,OUTPUT);
+  servo.attach(servoPin);
 
   
 
@@ -105,10 +143,18 @@ void setup() {
     BLECharacteristic::PROPERTY_WRITE
   );
 
-  pLedCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
+   pservoCharacteristic= pService->createCharacteristic(
+    SERVO_CHARACTERISTIC_UUID,
+    BLECharacteristic::PROPERTY_WRITE
+  );
+
+
+  pLedCharacteristic->setCallbacks(new MyCharacteristicCallbacksLed());
+   pSensorCharacteristic->setCallbacks(new MyCharacteristicCallbacksServo());
 
   pSensorCharacteristic->addDescriptor(new BLE2902());
   pLedCharacteristic->addDescriptor(new BLE2902());
+  pservoCharacteristic->addDescriptor(new BLE2902());
 
   pService->start();
 
@@ -141,5 +187,9 @@ void loop() {
     Serial.println("Device Connected");
   }
 }
+
+
+
+
 
 
