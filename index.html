@@ -25,7 +25,7 @@
   <button id="led6ButtonOff">led 6 off</button>
   <button id="servoBtn1">Servo button</button>
 
-
+  
 
   <p>Last value sent: <span id="valueSent"></span></p>
   
@@ -56,11 +56,14 @@ const valueSentContainer = document.getElementById('valueSent');
     var bleService = '19b10000-e8f2-537e-4f6c-d104768a1214';
     var ledCharacteristic = '19b10002-e8f2-537e-4f6c-d104768a1214';
     var sensorCharacteristic= '19b10001-e8f2-537e-4f6c-d104768a1214';
+    var servoCharacteristic='e42dc8ca-8171-4775-98f6-7fdaa333044b';
 
     //Global Variables to Handle Bluetooth
     var bleServer;
     var bleServiceFound;
     var sensorCharacteristicFound;
+    var servoCharacteristicFound;
+
 
     // Connect Button (search for BLE Devices only if BLE is available)
     connectButton.addEventListener('click', (event) => {
@@ -80,18 +83,9 @@ const valueSentContainer = document.getElementById('valueSent');
     led3ButtonOn.addEventListener('click', () => writeOnCharacteristic(4));
     led3ButtonOff.addEventListener('click', () => writeOnCharacteristic(5));
     led6ButtonOn.addEventListener('click',()=>writeOnCharacteristic(6));
-    led6ButtonOff.addEventListener('click',()=>writeOnCharacteristic(12));
-    servoBtn1.addEventListener('click',()=>sendServoCommand());
+    led6ButtonOff.addEventListener('click',()=>writeOnCharacteristic(11));
+    servoBtn1.addEventListener('click',()=>writeOnCharacteristic2(12));
 
-
-    let servoButtonClicked = false;
-
-function sendServoCommand() {
-    if (!servoButtonClicked) {
-        servoButtonClicked = true;
-        writeOnCharacteristic(11);
-    }
-}
 
     function isWebBluetoothEnabled() {
         if (!navigator.bluetooth) {
@@ -179,6 +173,28 @@ function sendServoCommand() {
             window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!")
         }
     }
+
+    function writeOnCharacteristic2(value){
+        if (bleServer && bleServer.connected) {
+            bleServiceFound.getCharacteristic(servoCharacteristic)
+            .then(characteristic => {
+                console.log("Found the senvo characteristic: ", characteristic.uuid);
+                const data = new Uint8Array([value]);
+                return characteristic.writeValue(data);
+            })
+            .then(() => {
+                latestValueSent.innerHTML = value;
+                console.log("Value written to writecharacteristic:", value);
+            })
+            .catch(error => {
+                console.error("Error writing to the servo characteristic: ", error);
+            });
+        } else {
+            console.error ("Bluetooth is not connected. Cannot write to characteristic.")
+            window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!")
+        }
+    }
+
 
 
 
