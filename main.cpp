@@ -75,12 +75,6 @@ class MyCharacteristicCallbacksLed : public BLECharacteristicCallbacks {
       }else if(receivedValue==11)
       {
         digitalWrite(ledPin6,LOW);
-      }else  if (receivedValue ==12) {
-          servo.write(180);
-    delay(200);
-    servo.write(0);
-    //delay(25);
-        
       }
 
       
