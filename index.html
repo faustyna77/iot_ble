@@ -21,8 +21,8 @@
   <button id="led3ButtonOn">Toggle on LED 3</button>
   <button id="led3ButtonOff">Toggle off LED 3</button>
   <h2>Control Servo Motor</h2>
-  <button id="moveServoButton">Move Servo</button>
-  <button id="stopServoButton">Stop Servo</button>
+  <button id="led6ButtonOn">led 6 on </button>
+  <button id="led6ButtonOff">led 6 off</button>
   <button id="servoBtn1">Servo button</button>
   <p>Last value sent: <span id="valueSent"></span></p>
   
@@ -40,8 +40,8 @@ const led3ButtonOn = document.getElementById('led3ButtonOn');
 const led3ButtonOff = document.getElementById('led3ButtonOff');
 const servoBtn1=document.getElementById('servoBtn1');
 
-const moveServoButton = document.getElementById('moveServoButton');
-const stopServoButton = document.getElementById('stopServoButton');
+const led6ButtonOn = document.getElementById('led6ButtonOn');
+const led6ButtonOff = document.getElementById('led6ButtonOff');
 const bleStateContainer = document.getElementById('bleState');
 const valueContainer = document.getElementById('valueContainer');
 const timestampContainer = document.getElementById('timestamp');
@@ -76,8 +76,8 @@ const valueSentContainer = document.getElementById('valueSent');
     led2ButtonOff.addEventListener('click', () => writeOnCharacteristic(3));
     led3ButtonOn.addEventListener('click', () => writeOnCharacteristic(4));
     led3ButtonOff.addEventListener('click', () => writeOnCharacteristic(5));
-    moveServoButton.addEventListener('click',()=>writeOnCharacteristic(6));
-    stopServoButton.addEventListener('click',()=>writeOnCharacteristic(12));
+    led6ButtonOn.addEventListener('click',()=>writeOnCharacteristic(6));
+    led6ButtonOff.addEventListener('click',()=>writeOnCharacteristic(12));
     servoBtn1.addEventListener('click',()=>writeOnCharacteristic(11));
 
 
