@@ -24,6 +24,9 @@
   <button id="led6ButtonOn">led 6 on </button>
   <button id="led6ButtonOff">led 6 off</button>
   <button id="servoBtn1">Servo button</button>
+
+
+
   <p>Last value sent: <span id="valueSent"></span></p>
   
 </body>
@@ -78,8 +81,17 @@ const valueSentContainer = document.getElementById('valueSent');
     led3ButtonOff.addEventListener('click', () => writeOnCharacteristic(5));
     led6ButtonOn.addEventListener('click',()=>writeOnCharacteristic(6));
     led6ButtonOff.addEventListener('click',()=>writeOnCharacteristic(12));
-    servoBtn1.addEventListener('click',()=>writeOnCharacteristic(11));
+    servoBtn1.addEventListener('click',()=>sendServoCommand());
 
+
+    let servoButtonClicked = false;
+
+function sendServoCommand() {
+    if (!servoButtonClicked) {
+        servoButtonClicked = true;
+        writeOnCharacteristic(11);
+    }
+}
 
     function isWebBluetoothEnabled() {
         if (!navigator.bluetooth) {
