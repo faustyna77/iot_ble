@@ -74,6 +74,8 @@ const valueSentContainer = document.getElementById('valueSent');
     led2ButtonOff.addEventListener('click', () => writeOnCharacteristic(3));
     led3ButtonOn.addEventListener('click', () => writeOnCharacteristic(4));
     led3ButtonOff.addEventListener('click', () => writeOnCharacteristic(5));
+    moveServoButton.addEventListener('click',()=>writeOnCharacteristic(6));
+    stopServoButton.addEventListener('click',()=>writeOnCharacteristic(12));
 
 
     function isWebBluetoothEnabled() {
