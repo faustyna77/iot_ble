@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,49 +14,47 @@
   <h2>Fetched Value</h2>
   <p><span id="valueContainer">NaN</span></p>
   <p>Last reading: <span id="timestamp"></span></p>
-  <h2>Control LEDs</h2>
+  <h2>Control GPIO 2</h2>
+  
   <button id="led1ButtonOn">Toggle on LED 1</button>
   <button id="led1ButtonOff">Toggle off LED 1</button>
   <button id="led2ButtonOn">Toggle on LED 2</button>
   <button id="led2ButtonOff">Toggle off LED 2</button>
   <button id="led3ButtonOn">Toggle on LED 3</button>
   <button id="led3ButtonOff">Toggle off LED 3</button>
-  <h2>Control Servo Motor</h2>
-  <input type="range" id="servoSlider" min="0" max="180" step="1" value="90">
-  <span id="servoValue">90</span>
-  <button id="setServoButton">Set Servo Position</button>
-
+  <button id="servoOn">servo on 3</button>
+  <button id="servoOff">servo off3</button>
   <p>Last value sent: <span id="valueSent"></span></p>
+  
 </body>
 <script>
-    // Deklaracje stałych identyfikatorów
+    // DOM Elements
     const connectButton = document.getElementById('connectBleButton');
     const disconnectButton = document.getElementById('disconnectBleButton');
+    
     const led1ButtonOn = document.getElementById('led1ButtonOn');
     const led1ButtonOff = document.getElementById('led1ButtonOff');
     const led2ButtonOn = document.getElementById('led2ButtonOn');
     const led2ButtonOff = document.getElementById('led2ButtonOff');
     const led3ButtonOn = document.getElementById('led3ButtonOn');
     const led3ButtonOff = document.getElementById('led3ButtonOff');
-    const servoSlider = document.getElementById('servoSlider');
-    const servoValue = document.getElementById('servoValue');
-    const setServoButton = document.getElementById('setServoButton');
-
+    const servoOn = document.getElementById('servoOn');
+    const servoOff = document.getElementById('servoOff');
+    const retrievedValue = document.getElementById('valueContainer');
+    const latestValueSent = document.getElementById('valueSent');
     const bleStateContainer = document.getElementById('bleState');
-    const valueContainer = document.getElementById('valueContainer');
     const timestampContainer = document.getElementById('timestamp');
-    const valueSentContainer = document.getElementById('valueSent');
 
+    //Define BLE Device Specs
     var deviceName ='ESP32';
     var bleService = '19b10000-e8f2-537e-4f6c-d104768a1214';
     var ledCharacteristic = '19b10002-e8f2-537e-4f6c-d104768a1214';
     var sensorCharacteristic= '19b10001-e8f2-537e-4f6c-d104768a1214';
-    var servoCharacteristic='e42dc8ca-8171-4775-98f6-7fdaa333044b';
 
+    //Global Variables to Handle Bluetooth
     var bleServer;
     var bleServiceFound;
     var sensorCharacteristicFound;
-    var servoCharacteristicFound;
 
     // Connect Button (search for BLE Devices only if BLE is available)
     connectButton.addEventListener('click', (event) => {
@@ -74,12 +73,10 @@
     led2ButtonOff.addEventListener('click', () => writeOnCharacteristic(3));
     led3ButtonOn.addEventListener('click', () => writeOnCharacteristic(4));
     led3ButtonOff.addEventListener('click', () => writeOnCharacteristic(5));
+    servoOn.addEventListener('click', () => writeOnCharacteristic(6));
+    servoOff.addEventListener('click',()=>writeOnCharacteristic(7));
 
-    setServoButton.addEventListener('click', () => {
-        const value = parseInt(servoSlider.value);
-        writeServoCharacteristic(value);
-    });
-
+    // Check if BLE is available in your Browser
     function isWebBluetoothEnabled() {
         if (!navigator.bluetooth) {
             console.log("Web Bluetooth API is not available in this browser!");
@@ -90,6 +87,7 @@
         return true
     }
 
+    // Connect to BLE Device and Enable Notifications
     function connectToDevice(){
         console.log('Initializing Bluetooth...');
         navigator.bluetooth.requestDevice({
@@ -140,6 +138,13 @@
         connectToDevice();
     }
 
+    function handleCharacteristicChange(event){
+        const newValueReceived = new TextDecoder().decode(event.target.value);
+        console.log("Characteristic value changed: ", newValueReceived);
+        retrievedValue.innerHTML = newValueReceived;
+        timestampContainer.innerHTML = getDateTime();
+    }
+
     function writeOnCharacteristic(value){
         if (bleServer && bleServer.connected) {
             bleServiceFound.getCharacteristic(ledCharacteristic)
@@ -150,7 +155,7 @@
             })
             .then(() => {
                 latestValueSent.innerHTML = value;
-                console.log("Value written to LED characteristic:", value);
+                console.log("Value written to LEDcharacteristic:", value);
             })
             .catch(error => {
                 console.error("Error writing to the LED characteristic: ", error);
@@ -158,26 +163,6 @@
         } else {
             console.error ("Bluetooth is not connected. Cannot write to characteristic.")
             window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!")
-        }
-    }
-
-    function writeServoCharacteristic(value) {
-        if (bleServer && bleServer.connected) {
-            bleServiceFound.getCharacteristic(servoCharacteristic)
-                .then(characteristic => {
-                    console.log("Found the Servo characteristic: ", characteristic.uuid);
-                    const data = new Uint8Array([value]);
-                    return characteristic.writeValue(data);
-                })
-                .then(() => {
-                    console.log("Value written to Servo characteristic:", value);
-                })
-                .catch(error => {
-                    console.error("Error writing to the Servo characteristic: ", error);
-                });
-        } else {
-            console.error("Bluetooth is not connected. Cannot write to characteristic.");
-            window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!");
         }
     }
 
@@ -203,9 +188,26 @@
                 console.log("No characteristic found to disconnect.");
             }
         } else {
+            // Throw an error if Bluetooth is not connected
             console.error("Bluetooth is not connected.");
-            window.alert("Bluetooth is not connected.");
+            window.alert("Bluetooth is not connected.")
         }
     }
+
+    function getDateTime() {
+        var currentdate = new Date();
+        var day = ("00" + currentdate.getDate()).slice(-2); // Convert day to string and slice
+        var month = ("00" + (currentdate.getMonth() + 1)).slice(-2);
+        var year = currentdate.getFullYear();
+        var hours = ("00" + currentdate.getHours()).slice(-2);
+        var minutes = ("00" + currentdate.getMinutes()).slice(-2);
+        var seconds = ("00" + currentdate.getSeconds()).slice(-2);
+
+        var datetime = day + "/" + month + "/" + year + " at " + hours + ":" + minutes + ":" + seconds;
+        return datetime;
+    }
+
+
 </script>
+
 </html>
