@@ -79,7 +79,8 @@
     led3ButtonOff.addEventListener('click', () => writeOnCharacteristic(LED_CHARACTERISTIC_UUID, 5));
     led6ButtonOn.addEventListener('click', () => writeOnCharacteristic(LED_CHARACTERISTIC_UUID, 6));
     led6ButtonOff.addEventListener('click', () => writeOnCharacteristic(LED_CHARACTERISTIC_UUID, 11));
-    servoBtn1.addEventListener('click', () => writeOnCharacteristic(SERVO_CHARACTERISTIC_UUID, 12));
+    servoBtn1.addEventListener('click', () => writeOnCharacteristic(LED_CHARACTERISTIC_UUID, 13));
+    //servoBtn1.addEventListener('click', () => writeOnCharacteristic(SERVO_CHARACTERISTIC_UUID, 12));
 
     function isWebBluetoothEnabled() {
         if (!navigator.bluetooth) {
