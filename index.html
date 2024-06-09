@@ -22,8 +22,14 @@
   <button id="led2ButtonOff">Toggle off LED 2</button>
   <button id="led3ButtonOn">Toggle on LED 3</button>
   <button id="led3ButtonOff">Toggle off LED 3</button>
-  <button id="servoOn">servo on 3</button>
-  <button id="servoOff">servo off3</button>
+  <button id="servoOn">servo on </button>
+  <button id="servoOff">servo off</button>
+  <button id="servoOn2">servo on2</button>
+  <button id="servoOff2">servo off2</button>
+  <button id="servoOn3">servo on 3</button>
+  <button id="servoOff3">servo off3</button>
+  <button id="servoOn4">servo on 4</button>
+  <button id="servoOff4">servo off4</button>
   <p>Last value sent: <span id="valueSent"></span></p>
   
 </body>
@@ -40,6 +46,12 @@
     const led3ButtonOff = document.getElementById('led3ButtonOff');
     const servoOn = document.getElementById('servoOn');
     const servoOff = document.getElementById('servoOff');
+    const servoOn2 = document.getElementById('servoOn2');
+    const servoOff2 = document.getElementById('servoOff2');
+    const servoOn3 = document.getElementById('servoOn3');
+    const servoOff3 = document.getElementById('servoOff3');
+    const servoOn4 = document.getElementById('servoOn4');
+    const servoOff4 = document.getElementById('servoOff4');
     const retrievedValue = document.getElementById('valueContainer');
     const latestValueSent = document.getElementById('valueSent');
     const bleStateContainer = document.getElementById('bleState');
@@ -75,6 +87,12 @@
     led3ButtonOff.addEventListener('click', () => writeOnCharacteristic(5));
     servoOn.addEventListener('click', () => writeOnCharacteristic(6));
     servoOff.addEventListener('click',()=>writeOnCharacteristic(7));
+    servoOn2.addEventListener('click', () => writeOnCharacteristic(8));
+    servoOff2.addEventListener('click',()=>writeOnCharacteristic(9));
+    servoOn3.addEventListener('click', () => writeOnCharacteristic(10));
+    servoOff3.addEventListener('click',()=>writeOnCharacteristic(11));
+    servoOn4.addEventListener('click', () => writeOnCharacteristic(12));
+    servoOff4.addEventListener('click',()=>writeOnCharacteristic(13));
 
     // Check if BLE is available in your Browser
     function isWebBluetoothEnabled() {
