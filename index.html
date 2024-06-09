@@ -1,37 +1,54 @@
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>ESP32 Web BLE App</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/png" href="">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .ble-state {
+            color: #d13a30;
+        }
+        .btn-icon {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    </style>
 </head>
 <body>
-  <h1>ESP32 Web BLE Application</h1>
-  <button id="connectBleButton">Connect to BLE Device</button>
-  <button id="disconnectBleButton">Disconnect BLE Device</button>
-  <p>BLE state: <strong><span id="bleState" style="color:#d13a30;">Disconnected</span></strong></p>
-  <h2>Fetched Value</h2>
-  <p><span id="valueContainer">NaN</span></p>
-  <p>Last reading: <span id="timestamp"></span></p>
-  <h2>Control GPIO 2</h2>
-  
-  <button id="led1ButtonOn">Toggle on LED 1</button>
-  <button id="led1ButtonOff">Toggle off LED 1</button>
-  <button id="led2ButtonOn">Toggle on LED 2</button>
-  <button id="led2ButtonOff">Toggle off LED 2</button>
-  <button id="led3ButtonOn">Toggle on LED 3</button>
-  <button id="led3ButtonOff">Toggle off LED 3</button>
-  <button id="servoOn">servo on </button>
-  <button id="servoOff">servo off</button>
-  <button id="servoOn2">servo on2</button>
-  <button id="servoOff2">servo off2</button>
-  <button id="servoOn3">servo on 3</button>
-  <button id="servoOff3">servo off3</button>
-  <button id="servoOn4">servo on 4</button>
-  <button id="servoOff4">servo off4</button>
-  <p>Last value sent: <span id="valueSent"></span></p>
-  
+    <div class="container">
+        <h1 class="mb-4">ESP32 Web BLE Application</h1>
+        <div class="mb-3">
+            <button id="connectBleButton" class="btn btn-primary">Connect to BLE Device</button>
+            <button id="disconnectBleButton" class="btn btn-danger">Disconnect BLE Device</button>
+        </div>
+        <p>BLE state: <strong><span id="bleState" class="ble-state">Disconnected</span></strong></p>
+        <h2 class="mt-4">Fetched Value</h2>
+        <p><span id="valueContainer">NaN</span></p>
+        <p>Last reading: <span id="timestamp"></span></p>
+        <h2 class="mt-4">Control GPIO 2</h2>
+        <div class="d-grid gap-2 d-md-block">
+            <button id="led1ButtonOn" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-up-circle-fill"></i> Toggle on LED 1</button>
+            <button id="led1ButtonOff" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-down-circle-fill"></i> Toggle off LED 1</button>
+            <button id="led2ButtonOn" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-up-circle-fill"></i> Toggle on LED 2</button>
+            <button id="led2ButtonOff" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-down-circle-fill"></i> Toggle off LED 2</button>
+            <button id="led3ButtonOn" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-up-circle-fill"></i> Toggle on LED 3</button>
+            <button id="led3ButtonOff" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-down-circle-fill"></i> Toggle off LED 3</button>
+            <button id="servoOn" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-left-circle-fill"></i> Servo on</button>
+            <button id="servoOff" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-right-circle-fill"></i> Servo off</button>
+            <button id="servoOn2" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-left-circle-fill"></i> Servo on 2</button>
+            <button id="servoOff2" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-right-circle-fill"></i> Servo off 2</button>
+            <button id="servoOn3" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-left-circle-fill"></i> Servo on 3</button>
+            <button id="servoOff3" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-right-circle-fill"></i> Servo off 3</button>
+            <button id="servoOn4" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-left-circle-fill"></i> Servo on 4</button>
+            <button id="servoOff4" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-right-circle-fill"></i> Servo off 4</button>
+        </div>
+        <p>Last value sent: <span id="valueSent"></span></p>
+    </div>
 </body>
 <script>
     // DOM Elements
@@ -99,10 +116,10 @@
         if (!navigator.bluetooth) {
             console.log("Web Bluetooth API is not available in this browser!");
             bleStateContainer.innerHTML = "Web Bluetooth API is not available in this browser!";
-            return false
+            return false;
         }
         console.log('Web Bluetooth API supported in this browser.');
-        return true
+        return true;
     }
 
     // Connect to BLE Device and Enable Notifications
@@ -145,7 +162,7 @@
         })
         .catch(error => {
             console.log('Error: ', error);
-        })
+        });
     }
 
     function onDisconnected(event){
@@ -156,6 +173,7 @@
         connectToDevice();
     }
 
+   
     function handleCharacteristicChange(event){
         const newValueReceived = new TextDecoder().decode(event.target.value);
         console.log("Characteristic value changed: ", newValueReceived);
@@ -173,13 +191,13 @@
             })
             .then(() => {
                 latestValueSent.innerHTML = value;
-                console.log("Value written to LEDcharacteristic:", value);
+                console.log("Value written to LED characteristic:", value);
             })
             .catch(error => {
                 console.error("Error writing to the LED characteristic: ", error);
             });
         } else {
-            console.error ("Bluetooth is not connected. Cannot write to characteristic.")
+            console.error("Bluetooth is not connected. Cannot write to characteristic.")
             window.alert("Bluetooth is not connected. Cannot write to characteristic. \n Connect to BLE first!")
         }
     }
@@ -197,7 +215,6 @@
                         console.log("Device Disconnected");
                         bleStateContainer.innerHTML = "Device Disconnected";
                         bleStateContainer.style.color = "#d13a30";
-
                     })
                     .catch(error => {
                         console.log("An error occurred:", error);
@@ -224,8 +241,5 @@
         var datetime = day + "/" + month + "/" + year + " at " + hours + ":" + minutes + ":" + seconds;
         return datetime;
     }
-
-
 </script>
-
 </html>
