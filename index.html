@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style.css">
     <style>
+        
         body {
             padding: 20px;
         }
@@ -17,40 +19,111 @@
             align-items: center;
             gap: 5px;
         }
+
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 2;
+            overflow-y: auto;
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            color: white;
+            padding: 20px;
+        }
+
+        .circle {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            margin: 20px auto;
+            border: 1px solid white;
+            border-radius: 50%;
+        }
+
+        .circle button {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn1 { top: 10%; left: 50%; }
+        .btn2 { top: 30%; left: 85%; }
+        .btn3 { top: 70%; left: 85%; }
+        .btn4 { top: 90%; left: 50%; }
+        .btn5 { top: 70%; left: 15%; }
+        .btn6 { top: 30%; left: 15%; }
+        .btn-center { top: 50%; left: 50%; }
+
+        .row {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
+    <video autoplay muted loop class="video-background">
+        <source src="video/3372-169168117_tiny.mp4" type="video/mp4">
+    </video>
     <div class="container">
-        <h1 class="mb-4">ESP32 Web BLE Application</h1>
+        <h1 class="mb-4">Bluetooth Web Robot</h1>
         <div class="mb-3">
-            <button id="connectBleButton" class="btn btn-primary">Connect to BLE Device</button>
-            <button id="disconnectBleButton" class="btn btn-danger">Disconnect BLE Device</button>
+            <button id="connectBleButton" class="btn btn-primary">Podłącz bluetooth aby uzyskać kontrole</button>
+            <button id="disconnectBleButton" class="btn btn-danger">Wyłącz bluetooth</button>
         </div>
-        <p>BLE state: <strong><span id="bleState" class="ble-state">Disconnected</span></strong></p>
-        <h2 class="mt-4">Fetched Value</h2>
+        <p>STAN: <strong><span id="bleState" class="ble-state">Niepodłączono</span></strong></p>
         <p><span id="valueContainer">NaN</span></p>
-        <p>Last reading: <span id="timestamp"></span></p>
-        <h2 class="mt-4">Control GPIO 2</h2>
-        <div class="d-grid gap-2 d-md-block">
-            <button id="led1ButtonOn" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-up-circle-fill"></i> Toggle on LED 1</button>
-            <button id="led1ButtonOff" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-down-circle-fill"></i> Toggle off LED 1</button>
-            <button id="led2ButtonOn" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-up-circle-fill"></i> Toggle on LED 2</button>
-            <button id="led2ButtonOff" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-down-circle-fill"></i> Toggle off LED 2</button>
-            <button id="led3ButtonOn" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-up-circle-fill"></i> Toggle on LED 3</button>
-            <button id="led3ButtonOff" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-down-circle-fill"></i> Toggle off LED 3</button>
-            <button id="servoOn" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-left-circle-fill"></i> Servo on</button>
-            <button id="servoOff" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-right-circle-fill"></i> Servo off</button>
-            <button id="servoOn2" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-left-circle-fill"></i> Servo on 2</button>
-            <button id="servoOff2" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-right-circle-fill"></i> Servo off 2</button>
-            <button id="servoOn3" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-left-circle-fill"></i> Servo on 3</button>
-            <button id="servoOff3" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-right-circle-fill"></i> Servo off 3</button>
-            <button id="servoOn4" class="btn btn-outline-primary btn-icon mb-2"><i class="bi bi-arrow-left-circle-fill"></i> Servo on 4</button>
-            <button id="servoOff4" class="btn btn-outline-secondary btn-icon mb-2"><i class="bi bi-arrow-right-circle-fill"></i> Servo off 4</button>
+        <p>Ostatnia aktywność użytkownika: <span id="timestamp"></span></p>
+
+        <h2 class="mt-4">Kontroluj pozycję</h2>
+        <div class="row text-center">
+            <div class="col-md-6">
+                <h3>Robot 1</h3>
+                <div class="circle">
+                    <button id="servoOn" class="btn btn-outline-primary btn-icon btn1"><i class="bi bi-arrow-up-circle-fill"></i> sevo</button>
+                    <button id="servoOff" class="btn btn-outline-secondary btn-icon btn2"><i class="bi bi-arrow-down-circle-fill"></i></button>
+                    <button id="servoOn2" class="btn btn-outline-primary btn-icon btn3"><i class="bi bi-arrow-up-circle-fill"></i></button>
+                    <button id="servoOff2" class="btn btn-outline-secondary btn-icon btn4"><i class="bi bi-arrow-down-circle-fill"></i></button>
+                    <button id="servoOn3" class="btn btn-outline-primary btn-icon btn5"><i class="bi bi-arrow-up-circle-fill"></i></button>
+                    <button id="servoOff3" class="btn btn-outline-secondary btn-icon btn6"><i class="bi bi-arrow-down-circle-fill"></i></button>
+                    <button id="led1ButtonOn" class="btn btn-outline-primary btn-icon btn-center"><i class="bi bi-arrow-left-circle-fill"></i> LED ON</button>
+                    <button id="led1ButtonOff" class="btn btn-outline-primary btn-icon btn-center"><i class="bi bi-arrow-left-circle-fill"></i> LED OFF</button>
+                
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h3>Robot 2</h3>
+                <div class="circle">
+                    <button id="led1ButtonOn" class="btn btn-outline-primary btn-icon btn1"> <i class="bi bi-arrow-up-circle-fill"></i></button>
+                    <button id="led1ButtonOff" class="btn btn-outline-secondary btn-icon btn2"><i class="bi bi-arrow-down-circle-fill"></i></button>
+                    <button id="led2ButtonOn" class="btn btn-outline-primary btn-icon btn3"><i class="bi bi-arrow-up-circle-fill"></i></button>
+                    <button id="led2ButtonOff" class="btn btn-outline-secondary btn-icon btn4"><i class="bi bi-arrow-down-circle-fill"></i></button>
+                    <button id="robot2_led3ButtonOn" class="btn btn-outline-primary btn-icon btn5"><i class="bi bi-arrow-up-circle-fill"></i></button>
+                    <button id="robot2_led3ButtonOff" class="btn btn-outline-secondary btn-icon btn6"><i class="bi bi-arrow-down-circle-fill"></i></button>
+                    <button id="robot2_servoOn" class="btn btn-outline-primary btn-icon btn-center"><i class="bi bi-arrow-left-circle-fill"></i> Servo on</button>
+                
+                </div>
+            </div>
         </div>
-        <p>Last value sent: <span id="valueSent"></span></p>
     </div>
-</body>
-<script>
+    <script>
+        
     // DOM Elements
     const connectButton = document.getElementById('connectBleButton');
     const disconnectButton = document.getElementById('disconnectBleButton');
@@ -69,6 +142,10 @@
     const servoOff3 = document.getElementById('servoOff3');
     const servoOn4 = document.getElementById('servoOn4');
     const servoOff4 = document.getElementById('servoOff4');
+    const servoOn5 = document.getElementById('servoOn5');
+    const servoOff5 = document.getElementById('servoOff5');
+    const servoOn6 = document.getElementById('servoOn6');
+    const servoOff6 = document.getElementById('servoOff6');
     const retrievedValue = document.getElementById('valueContainer');
     const latestValueSent = document.getElementById('valueSent');
     const bleStateContainer = document.getElementById('bleState');
@@ -110,7 +187,10 @@
     servoOff3.addEventListener('click',()=>writeOnCharacteristic(11));
     servoOn4.addEventListener('click', () => writeOnCharacteristic(12));
     servoOff4.addEventListener('click',()=>writeOnCharacteristic(13));
-
+    servoOn5.addEventListener('click', () => writeOnCharacteristic(14));
+    servoOff5.addEventListener('click',()=>writeOnCharacteristic(15));
+    servoOn6.addEventListener('click', () => writeOnCharacteristic(16));
+    servoOff6.addEventListener('click',()=>writeOnCharacteristic(17));
     // Check if BLE is available in your Browser
     function isWebBluetoothEnabled() {
         if (!navigator.bluetooth) {
@@ -241,5 +321,6 @@
         var datetime = day + "/" + month + "/" + year + " at " + hours + ":" + minutes + ":" + seconds;
         return datetime;
     }
-</script>
+    </script>
+</body>
 </html>
