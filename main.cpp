@@ -13,7 +13,7 @@ bool deviceConnected = false;
 bool oldDeviceConnected = false;
 uint32_t value = 0;
 
-const int ledPin = 2; // Use the appropriate GPIO pin for your setup
+const int ledPin = 2; // GPIO FROM ESP32 TO SETUP
 const int ledPin3 = 3;
 const int ledPin4 = 4;
 const int ledPin5 = 5;
@@ -27,7 +27,7 @@ const int servoPin4 = 19;
  Servo servo3;
  Servo servo4;
  
-// See the following for generating UUIDs:
+// ANOTHER UUID FOR EVERY EVENTS 
 // https://www.uuidgenerator.net/
 
 #define SERVICE_UUID        "19b10000-e8f2-537e-4f6c-d104768a1214"
